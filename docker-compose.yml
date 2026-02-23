@@ -11,6 +11,9 @@ services:
     ports:
       - "8888:8888"
 
+    environment:
+      - PYTHONPATH=/app
+
     command: >
       python -m notebook
       --ip=0.0.0.0 
