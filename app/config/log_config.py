@@ -27,10 +27,10 @@ def configure_logger(aplication_name: str) -> logging.Logger:
         # Garante que a pasta logs existe
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
         
-        file_handler = logging.FileHandler(log_path) # Onde os logs serão salvos
+        file_handler = logging.FileHandler(log_path)# Onde os logs serão salvos
         file_handler.setFormatter(formatter) 
         
-        stream_handler = logging.StreamHandler(sys.stdout) # Log no console
+        stream_handler = logging.StreamHandler(sys.stdout)# Log no console
         stream_handler.setFormatter(formatter)
         
         # Adiciona os handlers ao logger
@@ -42,3 +42,4 @@ def configure_logger(aplication_name: str) -> logging.Logger:
 logger_api = configure_logger("api")
 logger_db = configure_logger("database")
 logger_training = configure_logger("training")
+logger_data_processing = configure_logger("data_processing")
