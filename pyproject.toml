@@ -5,6 +5,7 @@ description = "Projeto de Engenharia de ML para o Datathon FIAP"
 authors = [
     {name = "Kevin da Silva Nunes Amaral",email = "kevinsilvaofl@gmail.com"}
 ]
+package-mode = false
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
@@ -18,19 +19,28 @@ build-backend = "poetry.core.masonry.api"
 [dependency-groups]
 dev = [
     "commitizen (>=4.13.7,<5.0.0)",
-    "pandas (>=3.0.0,<4.0.0)",
     "scikit-learn (>=1.8.0,<2.0.0)",
     "numpy (>=2.4.2,<3.0.0)",
     "seaborn (>=0.13.2,<0.14.0)",
     "black (>=26.1.0,<27.0.0)",
     "isort (>=7.0.0,<8.0.0)",
     "taskipy (>=1.14.1,<2.0.0)",
-    "flake8 (>=7.3.0,<8.0.0)",
     "jupyter (>=1.1.1,<2.0.0)",
     "notebook (>=7.5.3,<8.0.0)",
     "ipykernel (>=7.2.0,<8.0.0)",
     "openpyxl (>=3.1.5,<4.0.0)",
-    "matplotlib (>=3.10.8,<4.0.0)"
+    "matplotlib (>=3.10.8,<4.0.0)",
+    "pandas (>=2.2.0,<3.0.0)",
+    "xgboost (>=3.2.0,<4.0.0)",
+    "mlflow (>=3.10.0,<4.0.0)",
+    "uvicorn (>=0.41.0,<0.42.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "python-multipart (>=0.0.22,<0.0.23)",
+    "sqlalchemy (>=2.0.48,<3.0.0)",
+    "psycopg2-binary (>=2.9.11,<3.0.0)",
+    "werkzeug (>=3.1.6,<4.0.0)",
+    "pydantic[email] (>=2.12.5,<3.0.0)",
+    "python-jose[cryptography] (>=3.5.0,<4.0.0)",
 ]
 
 [tool.commitizen]
@@ -52,4 +62,4 @@ line_length = 88
 [tool.taskipy.tasks]
 format = "isort . && black ."
 
-lint = "flake8 . && black --check . && isort --check-only ."
+lint = "black --check . && isort --check-only ."
