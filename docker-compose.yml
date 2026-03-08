@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  ml-app-datathon:
+    build: .
+    container_name: ml-app-datathon-container
+
+    volumes:
+      - .:/app
+    
+    ports:
+      - "8888:8888"
+
+    environment:
+      - PYTHONPATH=/app
+
+    command: >
+      python -m notebook
+      --ip=0.0.0.0 
+      --port=8888 
+      --no-browser 
+      --allow-root 
+      --NotebookApp.token='' 
+      --NotebookApp.password=''
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  mlflow:
+    build: .
+    container_name: mlflow-server
+
+    volumes:
+      - .:/app
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      - PYTHONPATH=/app
+
+    working_dir: /app
+    
+    command: >
+      poetry run mlflow ui --host 0.0.0.0 --port 5000
+
+  api:
+    build: .
+
+    container_name: fastapi-server
+
+    volumes:
+      - .:/app
+  
+    ports:
+      - "8000:8000"
+
+    environment:
+      - PYTHONPATH=/app
+      - DB_USER=admin
+      - DB_PASSWORD=senha_secreta
+      - DB_NAME=datathon_db
+      - DB_PORT=5432
+      - DB_HOST=db
+
+    working_dir: /app
+
+    command: >
+      poetry run uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:15-alpine
+
+    container_name: postgres-db
+
+    restart: always
+
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=senha_secreta
+      - POSTGRES_DB=datathon_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build: .
+
+    container_name: streamlit-frontend
+
+    volumes:
+      - .:/app
+
+    ports:
+      - "8501:8501"
+
+    depends_on:
+      - api
+
+    environment:
+      - PYTHONPATH=/app
+      - API_URL=http://api:8000
+
+    working_dir: /app
+
+    command: >
+      poetry run streamlit run app/front_end/front_end.py --server.port=8501 --server.address=0.0.0.0
+
+volumes:
+  postgres_data:
