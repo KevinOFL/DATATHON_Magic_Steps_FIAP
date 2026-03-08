@@ -53,6 +53,19 @@ def df_dados_padrao():
 
 
 def test_func_exclude_columns(df_dados_padrao):
+    """
+    Testa a função de exclusão de colunas do DataFrame.
+
+    Verifica se a função exclude_columns remove corretamente as colunas 
+    especificadas ("ID" e "Estado") e garante que as colunas não especificadas 
+    ("Idade") permaneçam intactas no DataFrame resultante.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.exclude_columns(df_dados_padrao, ["ID", "Estado"])
 
     assert "ID" not in df_resultado.columns
@@ -62,6 +75,19 @@ def test_func_exclude_columns(df_dados_padrao):
 
 
 def test_func_padronize_collumns(df_dados_padrao):
+    """
+    Testa a função de padronização inicial dos nomes das colunas.
+
+    Verifica se a função padronize_collumns converte corretamente todos os 
+    nomes das colunas do DataFrame para letras minúsculas, garantindo que 
+    nenhuma coluna permaneça com letras maiúsculas.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
 
     assert df_resultado.columns.str.islower().all()
@@ -70,6 +96,19 @@ def test_func_padronize_collumns(df_dados_padrao):
 
 
 def test_func_padronize_column_gender(df_dados_padrao):
+    """
+    Testa a padronização e conversão da coluna de gênero.
+
+    Verifica se a função padronize_column_gender mapeia corretamente as 
+    informações de gênero originais para uma lista binária predefinida, 
+    avaliando se a ordem e os valores batem exatamente com o gabarito esperado.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_column_gender(df_resultado)
 
@@ -79,6 +118,19 @@ def test_func_padronize_column_gender(df_dados_padrao):
 
 
 def test_func_padronize_names_for_collumns(df_dados_padrao):
+    """
+    Testa a renomeação estrutural das colunas do DataFrame.
+
+    Verifica se a função padronize_names_for_collumns altera corretamente 
+    os nomes das colunas, confirmando se a lista final de cabeçalhos 
+    corresponde exatamente à ordem e à nomenclatura estipulada pelo sistema.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
 
@@ -103,6 +155,19 @@ def test_func_padronize_names_for_collumns(df_dados_padrao):
 
 
 def test_func_studied_english(df_dados_padrao):
+    """
+    Testa a criação da coluna indicadora de estudo de inglês.
+
+    Verifica se a função studied_english adiciona com sucesso a nova coluna 
+    'estudou_ingles' ao DataFrame e se os valores binários nela gerados 
+    correspondem exatamente ao gabarito esperado para o conjunto de dados.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
     df_resultado = pp.studied_english(df_resultado)
@@ -114,6 +179,20 @@ def test_func_studied_english(df_dados_padrao):
 
 
 def test_func_aplication_median_for_nan(df_dados_padrao):
+    """
+    Testa a função de preenchimento de valores ausentes (NaN) pela mediana.
+
+    Verifica se a função aplication_median_for_nan substitui corretamente os 
+    valores nulos de colunas numéricas (como "mat" e "por") pelos valores de 
+    suas respectivas medianas. Também garante que colunas passadas como exceção 
+    (no caso, "ing") não sejam alteradas e mantenham seus valores NaN originais.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
 
@@ -135,6 +214,19 @@ def test_func_aplication_median_for_nan(df_dados_padrao):
 
 
 def test_func_correction_collum_inde(df_dados_padrao):
+    """
+    Testa a correção de tipagem da coluna do indicador INDE.
+
+    Verifica se a função correction_collum_inde processa e converte 
+    com sucesso os dados da coluna "inde" para o formato numérico 
+    de ponto flutuante ('float64'), permitindo cálculos matemáticos futuros.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
     df_resultado = pp.correction_collum_inde(df_resultado)
@@ -143,6 +235,20 @@ def test_func_correction_collum_inde(df_dados_padrao):
 
 
 def test_func_create_columns_for_discrepancies_in_subjects(df_dados_padrao):
+    """
+    Testa a criação de colunas de discrepância de notas por matéria.
+
+    Verifica se a função create_columns_for_discrepancies_in_subjects calcula 
+    e adiciona corretamente as novas colunas ("diferenca_mat", "diferenca_por" e 
+    "diferenca_ing") ao DataFrame, além de validar se as regras de cálculo 
+    estão gerando os valores esperados (como a presença do valor 0).
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
     df_resultado = pp.studied_english(df_resultado)
@@ -157,6 +263,19 @@ def test_func_create_columns_for_discrepancies_in_subjects(df_dados_padrao):
 
 
 def test_func_create_column_for_discrepancie_in_ieg_inde(df_dados_padrao):
+    """
+    Testa a criação de colunas de discrepância para os indicadores IEG e INDE.
+
+    Verifica se a função create_column_for_discrepancie_in_ieg_inde processa 
+    os dados e insere com sucesso as novas colunas analíticas ("diferenca_ieg" 
+    e "diferenca_inde") no DataFrame resultante.
+
+    parametros:
+    - df_dados_padrao (pd.DataFrame): Fixture contendo o DataFrame padrão de testes.
+
+    retorno:
+    - None: A função realiza apenas asserções de teste (assert).
+    """
     df_resultado = pp.padronize_collumns(df_dados_padrao)
     df_resultado = pp.padronize_names_for_collumns(df_resultado)
     df_resultado = pp.correction_collum_inde(df_resultado)

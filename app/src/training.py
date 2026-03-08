@@ -76,6 +76,24 @@ class training_models:
 
     @staticmethod
     def train_model_random_forest(X_train, y_train, X_test, y_test):
+        """
+        Treina, avalia e registra um modelo Random Forest com o MLflow.
+
+        Realiza a busca dos melhores hiperparâmetros utilizando RandomizedSearchCV. 
+        Após o treinamento, avalia o modelo no conjunto de teste utilizando o limiar 
+        de decisão padrão (0.5), calcula métricas de desempenho (Acurácia, F1 Score), 
+        gera gráficos (Matriz de Confusão e Importância das Variáveis) e registra 
+        todos os parâmetros, métricas, artefatos e o modelo final no MLflow.
+
+        parametros:
+        - X_train (pd.DataFrame): Conjunto de dados com as features de treinamento.
+        - y_train (pd.Series ou array): Variável alvo correspondente ao treinamento.
+        - X_test (pd.DataFrame): Conjunto de dados com as features de teste.
+        - y_test (pd.Series ou array): Variável alvo correspondente ao teste.
+
+        retorno:
+        - None: A função atua executando o pipeline e salvando os resultados no servidor MLflow.
+        """
         tags = {
             "model_type": "Random Forest Classifier",
             "developer": "Kevin da Silva Nunes Amaral",
@@ -175,6 +193,25 @@ class training_models:
     def train_model_random_forest_with_regua(
         X_train, y_train, X_test, y_test, regua_corte: float
     ):
+        """
+        Treina e avalia um modelo Random Forest aplicando uma régua de corte personalizada.
+
+        Semelhante ao treinamento padrão, otimiza hiperparâmetros via RandomizedSearchCV, 
+        mas avalia as predições finais baseando-se em um limiar de probabilidade 
+        específico (regua_corte). Calcula métricas focadas no problema de negócio 
+        (Recall, Precision, verdadeiros positivos/falsos negativos) para entender o 
+        impacto do modelo, registrando essas métricas e gráficos ajustados no MLflow.
+
+        parametros:
+        - X_train (pd.DataFrame): Conjunto de dados com as features de treinamento.
+        - y_train (pd.Series ou array): Variável alvo correspondente ao treinamento.
+        - X_test (pd.DataFrame): Conjunto de dados com as features de teste.
+        - y_test (pd.Series ou array): Variável alvo correspondente ao teste.
+        - regua_corte (float): Limiar de probabilidade (ex: 0.35) a partir do qual o aluno será classificado como evadido.
+
+        retorno:
+        - None: A função atua executando o pipeline e salvando os resultados ajustados no servidor MLflow.
+        """
         tags = {
             "model_type": "Random Forest Classifier",
             "developer": "Kevin da Silva Nunes Amaral",
@@ -301,6 +338,24 @@ class training_models:
 
     @staticmethod
     def train_model_xgboost(X_train, y_train, X_test, y_test):
+        """
+        Treina, avalia e registra um modelo XGBoost com o MLflow.
+
+        Configura um modelo XGBoost aplicando pesos para lidar com o desbalanceamento 
+        de classes (scale_pos_weight). Realiza a otimização de hiperparâmetros via 
+        RandomizedSearchCV, avalia as métricas de performance (Acurácia, F1 Score) com 
+        o limiar padrão, gera artefatos visuais e salva todo o registro do experimento 
+        na plataforma MLflow.
+
+        parametros:
+        - X_train (pd.DataFrame): Conjunto de dados com as features de treinamento.
+        - y_train (pd.Series ou array): Variável alvo correspondente ao treinamento.
+        - X_test (pd.DataFrame): Conjunto de dados com as features de teste.
+        - y_test (pd.Series ou array): Variável alvo correspondente ao teste.
+
+        retorno:
+        - None: A função atua executando o pipeline e salvando os resultados no servidor MLflow.
+        """
         tags = {
             "model_type": "XGBoost Classifier",
             "developer": "Kevin da Silva Nunes Amaral",
@@ -403,6 +458,25 @@ class training_models:
     def train_model_xgboost_with_regua(
         X_train, y_train, X_test, y_test, regua_corte: float
     ):
+        """
+        Treina e avalia um modelo XGBoost aplicando uma régua de corte personalizada.
+
+        Otimiza hiperparâmetros e treina o XGBoost com tratamento de classes desbalanceadas. 
+        Durante a avaliação do teste, sobrepõe a saída padrão aplicando o limiar de 
+        risco (regua_corte) fornecido. Calcula o impacto real do modelo em termos de 
+        "alunos salvos" e "falsos alarmes", gerando relatórios precisos, gráficos ajustados 
+        e versionando o modelo no MLflow com a indicação da régua no nome.
+
+        parametros:
+        - X_train (pd.DataFrame): Conjunto de dados com as features de treinamento.
+        - y_train (pd.Series ou array): Variável alvo correspondente ao treinamento.
+        - X_test (pd.DataFrame): Conjunto de dados com as features de teste.
+        - y_test (pd.Series ou array): Variável alvo correspondente ao teste.
+        - regua_corte (float): Limiar de probabilidade (ex: 0.35) a partir do qual o aluno será classificado como evadido.
+
+        retorno:
+        - None: A função atua executando o pipeline e salvando os resultados ajustados no servidor MLflow.
+        """
         tags = {
             "model_type": "XGBoost_Classifier",
             "developer": "Kevin da Silva Nunes Amaral",

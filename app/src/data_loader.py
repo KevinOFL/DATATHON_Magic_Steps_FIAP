@@ -5,6 +5,23 @@ from app.src.pre_processing import pre_processing as pp
 
 
 def get_clean_data(path="app/data/base_de_dados_pede_2024.xlsx"):
+    """
+    Executa o pipeline completo de pré-processamento para a base histórica da ONG.
+
+    Lê os dados brutos das planilhas referentes aos anos de 2022, 2023 e 2024, e 
+    aplica uma sequência de transformações para limpeza e padronização. Isso inclui 
+    a criação da variável alvo de evasão, exclusão de colunas não preditivas, 
+    correção de tipagens (idade, inde), padronização de nomenclatura de colunas e 
+    gêneros, criação de variáveis dummy (estudou inglês), imputação de valores 
+    nulos via mediana e engenharia de features (colunas de discrepâncias em notas e 
+    indicadores).
+
+    parametros:
+    - path (str): Caminho absoluto ou relativo para o arquivo Excel contendo as bases anuais. (Opcional, com valor padrão).
+
+    retorno:
+    - tuple: Retorna uma tupla contendo três DataFrames (pd.DataFrame) na seguinte ordem: dados_2022, dados_2023, dados_2024, todos limpos e prontos para modelagem.
+    """
     df_2022 = pd.read_excel(path, sheet_name="PEDE2022")
     df_2023 = pd.read_excel(path, sheet_name="PEDE2023")
     df_2024 = pd.read_excel(path, sheet_name="PEDE2024")
@@ -166,6 +183,21 @@ def get_clean_data(path="app/data/base_de_dados_pede_2024.xlsx"):
 
 
 def loading_data_prediction(archive):
+    """
+    Executa o pipeline de pré-processamento em novos dados recebidos para inferência.
+
+    Recebe um DataFrame bruto (geralmente recém-carregado via upload na API) e 
+    aplica estritamente as mesmas regras de transformação utilizadas no treinamento 
+    do modelo. Isso garante que os dados entrem no modelo (XGBoost) com a exata 
+    mesma estrutura, tipagem e engenharia de features (exclusão de colunas inúteis, 
+    padronização, dummies, imputação de mediana e colunas de discrepância).
+
+    parametros:
+    - archive (pd.DataFrame): O DataFrame bruto recebido pela requisição de predição.
+
+    retorno:
+    - pd.DataFrame: Um novo DataFrame limpo, padronizado e com as features de engenharia de dados aplicadas, pronto para ser submetido à função .predict() do modelo.
+    """
     df = pp.padronize_collumns(archive)
     df = pp.exclude_columns(
         df,
@@ -207,6 +239,40 @@ def loading_data_prediction(archive):
             "defasagem",
             "ipp",
         ],
+    )
+    df = pp.padronize_names_for_collumns(df)
+    df = pp.padronize_column_gender(df)
+    df = pp.studied_english(df)
+    df = pp.aplication_median_for_nan(df, "ing")
+    df = pp.correction_collum_inde(df)
+    df = pp.aplication_median_for_nan(df, "ing")
+    df = pp.create_columns_for_discrepancies_in_subjects(df)
+    df = pp.create_column_for_discrepancie_in_ieg_inde(df)
+
+    return df
+
+def loading_data(archive, exclude_collumns: list):
+    """
+    Executa o pipeline de pré-processamento em novos dados recebidos.
+
+    Recebe um DataFrame bruto (geralmente recém-carregado via upload na API) e 
+    aplica estritamente as mesmas regras de transformação utilizadas no treinamento 
+    do modelo. Isso garante que os dados entrem no algoritmo com a exata mesma 
+    estrutura, tipagem e engenharia de features (exclusão de colunas inúteis 
+    recebidas via parâmetro, padronização, dummies, imputação de mediana e 
+    colunas de discrepância).
+
+    parametros:
+    - archive (pd.DataFrame): O DataFrame bruto recebido pela requisição de predição.
+    - exclude_collumns (list): Lista de strings contendo os nomes das colunas que devem ser removidas do DataFrame original.
+
+    retorno:
+    - pd.DataFrame: Um novo DataFrame limpo, padronizado e com as features de engenharia de dados aplicadas, pronto para ser submetido à função .predict() do modelo.
+    """
+    df = pp.padronize_collumns(archive)
+    df = pp.exclude_columns(
+        df,
+        exclude_collumns,
     )
     df = pp.padronize_names_for_collumns(df)
     df = pp.padronize_column_gender(df)
