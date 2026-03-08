@@ -10,9 +10,3 @@ class UserCreate(BaseModel):
     password: str
     date_of_birth: date
     position: str
-
-
-# Esquema provisório para o Login (antes do JWT)
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
